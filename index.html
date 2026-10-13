@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GuV Rechner</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script defer src="app.js"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Wiki-Basis</p>
+          <h1>GuV Rechner</h1>
+        </div>
+        <div class="actions">
+          <div id="calculator-actions" class="actions">
+            <button id="add-row" type="button">Zeile hinzufügen</button>
+            <button id="recalculate" type="button" class="secondary">Berechnen</button>
+            <button id="new-calculation" type="button" class="secondary">Neu</button>
+          </div>
+          <div id="comparison-actions" class="actions" hidden>
+            <button id="calculate-factors" type="button">Faktoren rückrechnen</button>
+          </div>
+          <button id="download-template" type="button" class="primary">Excel-Vorlage</button>
+          <label class="upload-button">
+            <input id="import-template" type="file" accept=".csv,.xlsx,.xls" />
+            Vorlage importieren
+          </label>
+        </div>
+      </header>
+
+      <main>
+        <nav class="tabs" aria-label="Ansichten">
+          <button type="button" class="tab-button active" data-tab="calculator" aria-selected="true">Rechner</button>
+          <button type="button" class="tab-button" data-tab="comparison" aria-selected="false">Vorjahresvergleich</button>
+        </nav>
+
+        <section id="calculator-view">
+          <section class="summary-panel">
+            <div class="summary-card">
+              <label for="revenue-base">Umsatzbasis</label>
+              <div class="input-with-suffix">
+                <span>€</span>
+                <input id="revenue-base" type="text" inputmode="decimal" value="0,00" />
+              </div>
+            </div>
+            <div class="summary-card">
+              <span>Umsatz</span>
+              <strong id="summary-sales">0,00 €</strong>
+            </div>
+            <div class="summary-card">
+              <span>Gesamtkosten</span>
+              <strong id="summary-costs">0,00 €</strong>
+            </div>
+            <div class="summary-card highlight">
+              <span>Ergebnis</span>
+              <strong id="summary-result">0,00 €</strong>
+            </div>
+          </section>
+
+          <section class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Konto</th>
+                  <th>Bezeichnung</th>
+                  <th>Betrag</th>
+                  <th>Faktor</th>
+                  <th>Kennzeichen</th>
+                  <th>DB</th>
+                </tr>
+              </thead>
+              <tbody id="table-body"></tbody>
+            </table>
+          </section>
+        </section>
+
+        <section id="comparison-view" hidden>
+          <p id="comparison-status" class="comparison-status" role="status">
+            Importieren Sie eine Excel- oder CSV-Datei mit der Spalte „Vorjahreswert“, um den Vergleich zu starten.
+          </p>
+          <section class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Konto</th>
+                  <th>Bezeichnung</th>
+                  <th>Aktueller Betrag</th>
+                  <th>Vorjahreswert</th>
+                  <th>Kennzeichen</th>
+                  <th>Rückgerechneter Faktor</th>
+                </tr>
+              </thead>
+              <tbody id="comparison-table-body"></tbody>
+            </table>
+          </section>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
