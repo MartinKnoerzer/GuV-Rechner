@@ -33,8 +33,9 @@ Danach im Browser auf `http://localhost:8000` gehen.
 - Kontonummern werden als echte Konten-IDs behandelt und können bis 10 Stellen lang sein.
 - Erlöse werden als negative Werte erfasst, Kosten als positive Werte.
 - Die Gesamtsumme ergibt sich aus der reinen Vorzeichen-Addition aller Konten.
-- Bei Kostenzeilen steuert der Prozentwert, wie stark sie sich mit dem Umsatz verändern: 0 % hält die Kosten auf dem Basiswert, 100 % übernimmt die Umsatzänderung vollständig.
-- Im Reiter „Vorjahresvergleich“ zeigt die Anwendung aktuelle Beträge und die importierte Spalte „Vorjahreswert“ nebeneinander. „Faktoren rückrechnen“ ermittelt daraus die Kostenfaktoren und übernimmt berechenbare Werte in den Rechner.
+- Bei Kostenzeilen wird die Kostenbasis zuerst mit der Umsatzentwicklung angepasst. Der Prozentwert skaliert diesen angepassten Betrag: 100 % entspricht den Kosten bei gleicher prozentualer Veränderung wie der Umsatz; 107,84 % bedeutet 7,84 % mehr als dieser angepasste Betrag.
+- Im Reiter „Vorjahresvergleich“ zeigt die Anwendung aktuelle Beträge und die importierte Spalte „Vorjahreswert“ nebeneinander. „Faktoren rückrechnen“ ermittelt daraus die Kostenfaktoren und übernimmt berechenbare Werte in den Rechner. Dazu verwendet der Rechner die Vorjahreskosten und den Vorjahresumsatz als Basis, damit sich der rückgerechnete Faktor nicht nochmals auf die aktuellen Ist-Beträge aufschlägt.
+- Der rückgerechnete Faktor im Vorjahresvergleich setzt die tatsächlichen Kosten ins Verhältnis zu den Kosten, die bei 100 % Umsatzentwicklung zu erwarten wären: `Ist-Kosten / (Vorjahreskosten × Umsatzverhältnis) × 100`. Beispiel: Bei 2 % Umsatzwachstum steigen Kosten von 5.000 € bei 100 % Faktor auf 5.100 €. Tatsächliche Kosten von 5.500 € ergeben `5.500 / 5.100 × 100 = 107,84 %`. Im Rechner ergibt derselbe Faktor mit der umsatzangepassten Basis `5.100 × 107,84 % ≈ 5.500 €`.
 - Die Umsatzbasis ist sichtbar und kann angepasst werden. „Neu“ übernimmt die aktuellen DB-Werte als neue Beträge und setzt den aktuellen Umsatz als Umsatzbasis; Faktoren bleiben erhalten.
 - Beispiel-Konten wie 1000, 1010, 1040, 2000, 2010, 2100, 2200, 2300, 2400, 2600, 2900 und 3000 sind als Standardvorlage eingebaut.
 - Zeilen mit `Euro` werden als direkte Eingaben behandelt.

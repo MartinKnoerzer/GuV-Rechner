@@ -158,7 +158,9 @@ function formatFactorInput(value) {
   }
 
   const numeric = Number(raw.replace('%', '').replace(',', '.').replace(/\s+/g, ''));
-  return Number.isFinite(numeric) ? String(numeric) : '0';
+  return Number.isFinite(numeric)
+    ? new Intl.NumberFormat('de-DE', { maximumFractionDigits: 2 }).format(numeric)
+    : '0';
 }
 
 function normalizeFactor(value) {
@@ -224,9 +226,7 @@ function recalculate(options = { renderTable: true }) {
     }
 
     const factorPercent = Number(factorValue) / 100;
-    const fixedShare = baseValue * (1 - factorPercent);
-    const revenueDependentShare = baseValue * ratio * factorPercent;
-    next.db = fixedShare + revenueDependentShare;
+    next.db = baseValue * ratio * factorPercent;
     next.baseValue = baseValue;
     return next;
   });
@@ -370,8 +370,9 @@ function calculateFactors() {
     return;
   }
 
-  const revenueChange = currentRevenue / previousRevenue - 1;
+  const revenueRatio = currentRevenue / previousRevenue;
   let hasUncalculableCosts = false;
+  revenueBase = previousRevenue;
   rows = rows.map((row) => {
     if (row.kennzeichen === 'UM') {
       return { ...row, comparisonFactor: null };
@@ -382,16 +383,18 @@ function calculateFactors() {
       return { ...row, comparisonFactor: null };
     }
 
-    const costChange = Math.abs(row.betrag) / Math.abs(row.vorjahrValue) - 1;
-    const factor = costChange / revenueChange * 100;
+    const expectedCostsAt100Percent = Math.abs(row.vorjahrValue) * revenueRatio;
+    const factor = Math.abs(row.betrag) / expectedCostsAt100Percent * 100;
     return {
       ...row,
       faktor: String(factor),
+      baseValue: Math.abs(row.vorjahrValue),
       comparisonFactor: factor
     };
   });
 
   comparisonCalculated = true;
+  recalculate({ renderTable: false });
   comparisonStatus.textContent = hasUncalculableCosts
     ? 'Faktoren berechnet. „n. b.“ bedeutet: Für diese Zeile fehlt ein Vorjahreswert oder die Vorjahreskosten waren 0.'
     : 'Die Faktoren wurden berechnet und in den Rechner übernommen.';
