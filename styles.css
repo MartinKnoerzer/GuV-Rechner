@@ -64,6 +64,15 @@ h1 {
   gap: 10px;
 }
 
+.topbar > .actions {
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.export-actions {
+  flex-shrink: 0;
+}
+
 [hidden] {
   display: none !important;
 }
@@ -277,5 +286,114 @@ select:focus {
   .actions {
     width: 100%;
     justify-content: flex-start;
+  }
+}
+
+@page {
+  size: landscape;
+  margin: 14mm;
+}
+
+@media print {
+  html,
+  body {
+    min-height: 0;
+    background: #fff;
+    color: #111;
+    font-size: 10pt;
+  }
+
+  .app-shell {
+    max-width: none;
+    padding: 0;
+  }
+
+  .topbar {
+    margin-bottom: 14px;
+  }
+
+  .topbar .actions,
+  .tabs {
+    display: none !important;
+  }
+
+  .eyebrow {
+    color: #555;
+  }
+
+  h1 {
+    font-size: 22pt;
+  }
+
+  .summary-panel {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .summary-card {
+    padding: 10px 12px;
+    box-shadow: none;
+    break-inside: avoid;
+  }
+
+  .summary-card strong {
+    font-size: 14pt;
+  }
+
+  .summary-card.highlight {
+    background: #f1f5fb !important;
+  }
+
+  .table-wrapper {
+    overflow: visible;
+    border: 1px solid #bbb;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  table {
+    width: 100%;
+    min-width: 0;
+    font-size: 8pt;
+  }
+
+  th,
+  td {
+    padding: 5px 6px;
+    border-color: #ccc;
+  }
+
+  th,
+  .group-header-cell,
+  .group-total-cell {
+    background: #eee !important;
+    color: #111 !important;
+  }
+
+  input,
+  select {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: #111;
+    padding: 0;
+    font-size: inherit;
+    appearance: none;
+  }
+
+  .input-with-suffix {
+    gap: 4px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+
+  .input-with-suffix span {
+    color: #111;
+  }
+
+  tr {
+    break-inside: avoid;
   }
 }

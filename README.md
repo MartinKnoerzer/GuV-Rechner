@@ -10,6 +10,8 @@ Ein browser-basierter GuV-Rechner mit:
 - realistischen Beispiel-Konten aus einem Standard-GuV-Kontenplan
 - automatischer Berechnung mit Vorzeichenlogik
 - Excel-Vorlage für eigenen Kontenplan
+- Excel-Export des berechneten Ergebnisses mit separatem Rechner- und Vorjahresvergleichsblatt
+- druckfreundliche Ausgabe zum Speichern als PDF über den Browser
 - Import einer vorhandenen Excel- oder CSV-Vorlage
 - Vorjahresvergleich mit Rückrechnung der Kostenfaktoren aus Umsatz- und Kostenänderungen
 - lokaler Ausführung auf Windows und macOS
@@ -40,6 +42,8 @@ Danach im Browser auf `http://localhost:8000` gehen.
 - Beispiel-Konten wie 1000, 1010, 1040, 2000, 2010, 2100, 2200, 2300, 2400, 2600, 2900 und 3000 sind als Standardvorlage eingebaut.
 - Zeilen mit `Euro` werden als direkte Eingaben behandelt.
 - Die Ergebniszeile wird aus der Summe aller Vorzeichen errechnet.
+- „Ergebnis als Excel“ speichert die aktuellen Rechnerwerte und den Vorjahresvergleich als zwei Tabellenblätter in einer Arbeitsmappe.
+- „Als PDF drucken“ öffnet den Druckdialog des Browsers. Dort kann als Drucker „Als PDF speichern“ ausgewählt werden; gedruckt wird der gerade geöffnete Reiter.
 - Für die Rückrechnung muss jede Umsatzerlös-Zeile einen Vorjahreswert enthalten. Ein Faktor ist nicht eindeutig bestimmbar, wenn sich der Umsatz nicht verändert oder eine Kostenzeile keine von 0 verschiedenen Vorjahreskosten hat.
 
 ## Dateistruktur

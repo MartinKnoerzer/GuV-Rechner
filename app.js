@@ -94,6 +94,8 @@ const recalculateButton = document.querySelector('#recalculate');
 const newCalculationButton = document.querySelector('#new-calculation');
 const calculateFactorsButton = document.querySelector('#calculate-factors');
 const exportButton = document.querySelector('#download-template');
+const exportResultButton = document.querySelector('#download-result');
+const printReportButton = document.querySelector('#print-report');
 const importInput = document.querySelector('#import-template');
 const tabButtons = document.querySelectorAll('.tab-button');
 
@@ -547,6 +549,106 @@ exportButton.addEventListener('click', () => {
   XLSX.utils.book_append_sheet(wb, ws, 'GuV');
   XLSX.writeFile(wb, 'GuV_Struktur.xlsx');
 });
+
+exportResultButton.addEventListener('click', () => {
+  const workbook = XLSX.utils.book_new();
+  const calculatorData = [
+    ['GuV Rechner – Ergebnis'],
+    ['Erstellt am', new Date().toLocaleDateString('de-DE')],
+    ['Umsatzbasis', revenueBase],
+    ['Umsatz', getRevenueTotal()],
+    ['Gesamtkosten', getCostTotal()],
+    ['Ergebnis', getRevenueTotal() + getCostTotal()],
+    [],
+    ['Konto', 'Bezeichnung', 'Betrag', 'Faktor', 'Kennzeichen', 'DB']
+  ];
+
+  rows.forEach((row) => {
+    calculatorData.push([
+      row.konto,
+      row.bezeichnung,
+      Number(row.betrag || 0),
+      row.faktor,
+      row.kennzeichen,
+      Number(row.db || 0)
+    ]);
+  });
+
+  const calculatorSheet = XLSX.utils.aoa_to_sheet(calculatorData);
+  calculatorSheet['!cols'] = [
+    { wch: 14 },
+    { wch: 32 },
+    { wch: 18 },
+    { wch: 14 },
+    { wch: 16 },
+    { wch: 18 }
+  ];
+  const currencyFormat = '#,##0.00 "€";[Red]-#,##0.00 "€"';
+  [2, 3, 4, 5].forEach((rowIndex) => {
+    const cell = calculatorSheet[XLSX.utils.encode_cell({ r: rowIndex, c: 1 })];
+    if (cell) {
+      cell.z = currencyFormat;
+    }
+  });
+  rows.forEach((row, index) => {
+    const rowIndex = index + 8;
+    [2, 5].forEach((columnIndex) => {
+      const cell = calculatorSheet[XLSX.utils.encode_cell({ r: rowIndex, c: columnIndex })];
+      if (cell) {
+        cell.z = currencyFormat;
+      }
+    });
+  });
+  calculatorSheet['!autofilter'] = { ref: `A8:F${rows.length + 8}` };
+  XLSX.utils.book_append_sheet(workbook, calculatorSheet, 'Rechner');
+
+  const comparisonData = [
+    ['GuV Rechner – Vorjahresvergleich'],
+    ['Erstellt am', new Date().toLocaleDateString('de-DE')],
+    [],
+    ['Konto', 'Bezeichnung', 'Aktueller Betrag', 'Vorjahreswert', 'Kennzeichen', 'Rückgerechneter Faktor']
+  ];
+  rows.forEach((row) => {
+    comparisonData.push([
+      row.konto,
+      row.bezeichnung,
+      Number(row.betrag || 0),
+      row.vorjahrValue ?? '',
+      row.kennzeichen,
+      row.comparisonFactor ?? ''
+    ]);
+  });
+
+  const comparisonSheet = XLSX.utils.aoa_to_sheet(comparisonData);
+  comparisonSheet['!cols'] = [
+    { wch: 14 },
+    { wch: 32 },
+    { wch: 20 },
+    { wch: 18 },
+    { wch: 16 },
+    { wch: 28 }
+  ];
+  rows.forEach((row, index) => {
+    const rowIndex = index + 4;
+    [2, 3].forEach((columnIndex) => {
+      const cell = comparisonSheet[XLSX.utils.encode_cell({ r: rowIndex, c: columnIndex })];
+      if (cell) {
+        cell.z = currencyFormat;
+      }
+    });
+    const factorCell = comparisonSheet[XLSX.utils.encode_cell({ r: rowIndex, c: 5 })];
+    if (factorCell) {
+      factorCell.z = '0.00" %"';
+    }
+  });
+  comparisonSheet['!autofilter'] = { ref: `A4:F${rows.length + 4}` };
+  XLSX.utils.book_append_sheet(workbook, comparisonSheet, 'Vorjahresvergleich');
+
+  const date = new Date().toISOString().slice(0, 10);
+  XLSX.writeFile(workbook, `GuV-Ergebnis-${date}.xlsx`);
+});
+
+printReportButton.addEventListener('click', () => window.print());
 
 importInput.addEventListener('change', (event) => {
   const file = event.target.files?.[0];
